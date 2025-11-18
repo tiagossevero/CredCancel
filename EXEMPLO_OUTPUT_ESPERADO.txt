@@ -1,0 +1,206 @@
+================================================================================
+EXEMPLO DE OUTPUT ESPERADO - Data Schemas
+================================================================================
+
+Este arquivo mostra um exemplo de como serão os arquivos gerados pelo script.
+
+================================================================================
+1. ARQUIVO: teste.credito_dime_completo_describe.txt
+================================================================================
+
+================================================================================
+DESCRIBE FORMATTED
+================================================================================
+
+col_name                        data_type            comment
+nu_cnpj                         bigint               Número do CNPJ
+nm_empresarial                  string               Nome empresarial
+saldo_credor_atual              decimal(15,2)        Saldo credor atual
+score_risco_12m                 decimal(5,2)         Score de risco 12 meses
+classificacao_risco_12m         string               Classificação de risco 12m
+score_risco_60m                 decimal(5,2)         Score de risco 60 meses
+classificacao_risco_60m         string               Classificação de risco 60m
+score_risco_combinado_12m       decimal(5,2)         Score combinado 12 meses
+classificacao_risco_combinado_12m string             Classificação combinada 12m
+qtde_meses_declarados_12m       int                  Quantidade de meses declarados
+media_credito_12m               decimal(15,2)        Média de crédito 12 meses
+max_credito_12m                 decimal(15,2)        Crédito máximo 12 meses
+min_credito_12m                 decimal(15,2)        Crédito mínimo 12 meses
+desvio_padrao_credito_12m       decimal(15,2)        Desvio padrão crédito 12m
+crescimento_saldo_percentual_12m decimal(10,2)       Crescimento percentual saldo
+flag_empresa_suspeita           int                  Flag empresa suspeita (0/1)
+qtde_indicios_fraude            int                  Quantidade de indícios fraude
+flag_tem_declaracoes_zeradas    int                  Tem declarações zeradas (0/1)
+flag_tem_omissoes               int                  Tem omissões (0/1)
+sn_cancelado_inex_inativ        int                  Cancelado/Inexistente (0/1)
+flag_tem_pagamentos             int                  Tem pagamentos (0/1)
+prob_risco_ml                   decimal(5,4)         Probabilidade risco ML
+nivel_alerta_ml                 string               Nível alerta ML
+prediction                      int                  Predição ML (0/1)
+...
+(continua com mais colunas)
+
+
+================================================================================
+2. ARQUIVO: teste.credito_dime_completo_select.txt
+================================================================================
+
+================================================================================
+SELECT * FROM teste.credito_dime_completo LIMIT 10
+================================================================================
+
+nu_cnpj | nm_empresarial | saldo_credor_atual | score_risco_12m | classificacao_risco_12m | score_risco_60m | classificacao_risco_60m
+------------------------------------------------------------------------------------------------------------------------------------
+12345678901234 | EMPRESA EXEMPLO LTDA | 150000.00 | 85.50 | CRÍTICO | 78.30 | ALTO
+98765432109876 | COMERCIO DE PRODUTOS SA | 25000.00 | 45.20 | MÉDIO | 42.10 | MÉDIO
+11122233344455 | INDUSTRIA TEXTIL ME | 500000.00 | 92.80 | CRÍTICO | 88.90 | CRÍTICO
+55566677788899 | SERVICOS TECNOLOGIA EIRELI | 5000.00 | 15.30 | BAIXO | 18.20 | BAIXO
+22233344455566 | METALURGICA ABC LTDA | 300000.00 | 68.70 | ALTO | 65.40 | ALTO
+33344455566677 | COMERCIO VAREJISTA EPP | 0.00 | 95.10 | CRÍTICO | 93.80 | CRÍTICO
+44455566677788 | DISTRIBUIDORA XYZ SA | 80000.00 | 52.30 | MÉDIO | 48.90 | MÉDIO
+66677788899900 | TRANSPORTADORA DEF LTDA | 12000.00 | 35.80 | MÉDIO | 32.50 | MÉDIO
+77788899900011 | PRESTADORA SERVICOS ME | 200000.00 | 75.40 | ALTO | 71.20 | ALTO
+88899900011122 | FABRICANTE COMPONENTES SA | 450000.00 | 88.60 | CRÍTICO | 85.30 | CRÍTICO
+
+Total de registros exibidos: 10
+
+
+================================================================================
+3. ARQUIVO: teste.credito_dime_completo_metadata.txt
+================================================================================
+
+================================================================================
+METADADOS
+================================================================================
+Tabela: teste.credito_dime_completo
+Total de registros: 125,348
+Total de colunas: 87
+Data da extração: 2025-11-17 14:30:22
+
+Colunas:
+  - nu_cnpj
+  - nm_empresarial
+  - saldo_credor_atual
+  - score_risco_12m
+  - classificacao_risco_12m
+  - score_risco_60m
+  - classificacao_risco_60m
+  - score_risco_combinado_12m
+  - classificacao_risco_combinado_12m
+  - score_risco_combinado_60m
+  - classificacao_risco_combinado_60m
+  - qtde_meses_declarados_12m
+  - qtde_meses_declarados_60m
+  - media_credito_12m
+  - media_credito_60m
+  - max_credito_12m
+  - max_credito_60m
+  - min_credito_12m
+  - min_credito_60m
+  - desvio_padrao_credito_12m
+  - desvio_padrao_credito_60m
+  - crescimento_saldo_percentual_12m
+  - crescimento_saldo_percentual_60m
+  - crescimento_saldo_absoluto_12m
+  - crescimento_saldo_absoluto_60m
+  - vl_credito_presumido_12m
+  - vl_credito_presumido_60m
+  - qtde_tipos_cp_12m
+  - qtde_tipos_cp_60m
+  - saldo_12m_atras
+  - saldo_60m_atras
+  - valor_igual_total_periodos_12m
+  - valor_igual_total_periodos_60m
+  - qtde_ultimos_12m_iguais
+  - qtde_ultimos_60m_iguais
+  - flag_empresa_suspeita
+  - qtde_indicios_fraude
+  - flag_tem_declaracoes_zeradas
+  - flag_tem_omissoes
+  - flag_empresa_noteira
+  - score_suspeita
+  - sn_cancelado_inex_inativ
+  - flag_tem_pagamentos
+  - prob_risco_ml
+  - nivel_alerta_ml
+  - prediction
+  - flag_setor_textil
+  - flag_setor_metalmec
+  - flag_setor_tech
+  ... (continua)
+
+
+================================================================================
+4. ARQUIVO: INDEX.txt (Resumo Geral)
+================================================================================
+
+================================================================================
+ÍNDICE DE DATA SCHEMAS - CRED-CANCEL v3.0
+================================================================================
+Data de geração: 2025-11-17 14:30:45
+Total de tabelas: 29
+Processadas com sucesso: 29
+Falhas: 0
+Total de registros: 15,234,567
+
+================================================================================
+🎯 TABELAS DE PRIORIDADE ALTA (Streamlit)
+================================================================================
+✅ teste.credito_dime_completo - 125,348 registros
+✅ teste.credito_dime_textil - 8,921 registros
+✅ teste.credito_dime_metalmec - 15,432 registros
+✅ teste.credito_dime_tech - 3,567 registros
+
+================================================================================
+📁 TABELAS ORIGINAIS
+================================================================================
+✅ usr_sat_ods.ods_decl_dime_raw - 8,500,000 registros
+✅ usr_sat_ods.vw_cad_contrib - 350,000 registros
+✅ usr_sat_ods.vw_ods_pagamento - 2,100,000 registros
+✅ usr_sat_ods.vw_sna_pgdasd_grupo_empresarial - 45,000 registros
+✅ usr_sat_ods.vw_ods_contrib - 320,000 registros
+✅ usr_sat_ods.vw_ods_dcip - 180,000 registros
+✅ usr_sat_cadastro.ruc_protocolo - 850,000 registros
+✅ usr_sat_cadastro.ruc_general - 380,000 registros
+✅ usr_sat_cadastro.tab_sit_cad - 50 registros
+✅ usr_sat_shared.tab_generica - 1,200 registros
+✅ usr_sat_shared.tab_munic - 295 registros
+✅ usr_sat_auditoria.aud_empresa_sob_suspeita - 12,500 registros
+✅ usr_sat_auditoria.aud_empresa_suspeita - 8,900 registros
+
+================================================================================
+🔄 TABELAS INTERMEDIÁRIAS
+================================================================================
+✅ teste.credito_dime - 132,000 registros
+✅ teste.cancel_cnpj - 85,000 registros
+✅ teste.cancel_cadastro - 85,000 registros
+✅ teste.cancel_recolhimento - 75,000 registros
+✅ teste.cancel_suspeitas - 15,000 registros
+✅ teste.cancel_suspeitas_score - 15,000 registros
+✅ teste.cancel_zero_normal - 25,000 registros
+✅ teste.cancel_zero_simples - 18,000 registros
+✅ teste.cancel_final - 10,500 registros
+
+================================================================================
+📁 ESTRUTURA DE ARQUIVOS
+================================================================================
+
+Para cada tabela, foram gerados 3 arquivos:
+  1. <database>.<tabela>_describe.txt  - Schema detalhado (DESCRIBE FORMATTED)
+  2. <database>.<tabela>_select.txt    - Amostra de 10 registros (SELECT * LIMIT 10)
+  3. <database>.<tabela>_metadata.txt  - Metadados (total registros, colunas, etc)
+
+Organização de diretórios:
+  data_schemas/
+    ├── originais/      (tabelas usr_sat_*)
+    ├── intermediarias/ (tabelas teste.*)
+    └── INDEX.txt       (este arquivo)
+
+
+================================================================================
+FIM DO EXEMPLO
+================================================================================
+
+NOTA: Os dados acima são fictícios e servem apenas como exemplo do formato
+      de saída esperado. Os dados reais virão do banco de dados ao executar
+      o script.
