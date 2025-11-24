@@ -481,57 +481,52 @@ def carregar_dados_creditos(_engine) -> Dict[str, pd.DataFrame]:
         with _engine.connect() as conn:
             st.sidebar.success("✅ Conexão Impala OK!")
     except Exception as e:
-        st.sidebar.error(f"❌ Falha na conexão: {str(e)[:150]}")
+        st.sidebar.error(f"❌ Falha na conexão: {str(e)[:100]}")
         return {}
 
-    st.sidebar.write("📊 **Carregando dados:**")
-    st.sidebar.write("")
+    st.sidebar.write("📊 Carregando dados:")
 
     for key, table_name in TABELAS.items():
         try:
-            with st.sidebar.spinner(f"Carregando {table_name}..."):
-                query = f"SELECT * FROM {IMPALA_CONFIG['database']}.{table_name}"
-                df = pd.read_sql(query, _engine)
-                df.columns = [col.lower() for col in df.columns]
+            st.sidebar.write(f"📊 Carregando {table_name}...")
 
-                for col in df.select_dtypes(include=['object']).columns:
-                    try:
-                        df[col] = pd.to_numeric(df[col], errors='ignore')
-                    except:
-                        pass
+            query = f"SELECT * FROM {IMPALA_CONFIG['database']}.{table_name}"
+            df = pd.read_sql(query, _engine)
+            df.columns = [col.lower() for col in df.columns]
 
-                dados[key] = df
+            for col in df.select_dtypes(include=['object']).columns:
+                try:
+                    df[col] = pd.to_numeric(df[col], errors='ignore')
+                except:
+                    pass
 
-                if key in ['textil', 'metalmec', 'tech']:
-                    flag_col = f'flag_setor_{key}'
-                    if flag_col in df.columns:
-                        qtd_flag = (df[flag_col] == 1).sum()
-                        st.sidebar.write(
-                            f"  ✓ **{table_name}:** {len(df):,} registros "
-                            f"({qtd_flag:,} ativos)"
-                        )
-                    else:
-                        st.sidebar.write(f"  ✓ **{table_name}:** {len(df):,} registros")
+            dados[key] = df
+
+            # Debug detalhado
+            if key == 'tech':
+                st.sidebar.write(f"  ✓ Total registros: {len(df):,}")
+                if 'flag_setor_tech' in df.columns:
+                    flag_1 = (df['flag_setor_tech'] == 1).sum()
+                    st.sidebar.write(f"  ✓ Com flag=1: {flag_1:,}")
                 else:
-                    st.sidebar.write(f"  ✓ **{table_name}:** {len(df):,} registros")
+                    st.sidebar.write(f"  ⚠️ flag_setor_tech NÃO EXISTE!")
+            else:
+                st.sidebar.success(f"  ✓ {table_name}: {len(df):,} linhas")
 
         except Exception as e:
-            st.sidebar.error(f"  ❌ Erro em {table_name}")
-            st.sidebar.caption(f"  {str(e)[:100]}")
+            st.sidebar.error(f"❌ Erro em {table_name}")
+            st.sidebar.caption(f"{str(e)[:80]}")
             dados[key] = pd.DataFrame()
 
-    st.sidebar.write("")
+    # Verificação final
     st.sidebar.write("---")
-    st.sidebar.write("📋 **Resumo Final:**")
-
-    total_registros = sum(len(df) for df in dados.values())
-    tabelas_ok = sum(1 for df in dados.values() if not df.empty)
-
-    st.sidebar.write(f"  ✓ Tabelas carregadas: {tabelas_ok}/{len(TABELAS)}")
-    st.sidebar.write(f"  ✓ Total de registros: {total_registros:,}")
-
-    if total_registros == 0:
-        st.sidebar.error("⚠️ Nenhum dado foi carregado!")
+    st.sidebar.write("📋 Resumo Final:")
+    for key in ['completo', 'textil', 'metalmec', 'tech']:
+        df = dados.get(key, pd.DataFrame())
+        if not df.empty:
+            st.sidebar.write(f"  ✓ {key}: {len(df):,} registros")
+        else:
+            st.sidebar.write(f"  ❌ {key}: VAZIO")
 
     return dados
 
@@ -851,21 +846,39 @@ def calcular_estatisticas_setoriais(dados: Dict, periodo: str = '12m') -> pd.Dat
     col_score = get_col_name('score_risco', periodo)
     col_class = get_col_name('classificacao_risco', periodo)
 
+    # Debug setorial
+    st.sidebar.write("---")
+    st.sidebar.write("🔍 DEBUG Setorial:")
+    st.sidebar.write(f"Período: {periodo}")
+    st.sidebar.write(f"Dados recebidos: {list(dados.keys())}")
+
     for setor_key, setor_nome, flag_col in [
         ('textil', 'TÊXTIL', 'flag_setor_textil'),
         ('metalmec', 'METAL-MECÂNICO', 'flag_setor_metalmec'),
         ('tech', 'TECNOLOGIA', 'flag_setor_tech')
     ]:
         df = dados.get(setor_key, pd.DataFrame())
+
+        st.sidebar.write(f"  {setor_key}:")
+        st.sidebar.write(f"    Vazio? {df.empty}")
+
         if df.empty:
+            st.sidebar.write(f"    ⚠️ DataFrame vazio, pulando...")
             continue
 
+        st.sidebar.write(f"    Total registros: {len(df)}")
+
+        # Verificar se a coluna flag existe
         if flag_col in df.columns:
             df_ativo = df[df[flag_col] == 1]
+            st.sidebar.write(f"    Com flag=1: {len(df_ativo)}")
         else:
+            st.sidebar.write(f"    ⚠️ Coluna {flag_col} não existe, usando todos")
             df_ativo = df
 
+        # Se ainda está vazio após o filtro, pular
         if df_ativo.empty:
+            st.sidebar.write(f"    ❌ Vazio após filtro!")
             continue
 
         setor_info = {
@@ -882,7 +895,10 @@ def calcular_estatisticas_setoriais(dados: Dict, periodo: str = '12m') -> pd.Dat
         if 'flag_empresa_suspeita' in df_ativo.columns:
             setor_info['Suspeitas'] = len(df_ativo[df_ativo['flag_empresa_suspeita'] == 1])
 
+        st.sidebar.write(f"    ✓ Processado com sucesso")
         setores.append(setor_info)
+
+    st.sidebar.write(f"Total setores processados: {len(setores)}")
 
     return pd.DataFrame(setores)
 
