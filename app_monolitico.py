@@ -1222,27 +1222,11 @@ def criar_gauge(valor: float, titulo: str, max_val: float = 100,
 # =============================================================================
 
 def exportar_para_excel(df: pd.DataFrame, nome_arquivo: Optional[str] = None) -> BytesIO:
-    """Exporta DataFrame para Excel."""
+    """Exporta DataFrame para Excel usando openpyxl."""
     output = BytesIO()
 
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name='Dados', index=False)
-
-        workbook = writer.book
-        worksheet = writer.sheets['Dados']
-
-        header_format = workbook.add_format({
-            'bold': True,
-            'text_wrap': True,
-            'valign': 'top',
-            'fg_color': '#1565c0',
-            'font_color': 'white',
-            'border': 1
-        })
-
-        for col_num, value in enumerate(df.columns.values):
-            worksheet.write(0, col_num, value, header_format)
-            worksheet.set_column(col_num, col_num, 15)
 
     output.seek(0)
     return output
@@ -1258,26 +1242,15 @@ def exportar_para_csv(df: pd.DataFrame) -> BytesIO:
 
 def criar_relatorio_completo(df: pd.DataFrame, kpis: Dict,
                              titulo: str = "Relatório CRED-CANCEL") -> BytesIO:
-    """Cria relatório completo com dados e KPIs."""
+    """Cria relatório completo com dados e KPIs usando openpyxl."""
     output = BytesIO()
 
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df_resumo = pd.DataFrame([kpis]).T
         df_resumo.columns = ['Valor']
         df_resumo.to_excel(writer, sheet_name='Resumo')
 
         df.to_excel(writer, sheet_name='Dados Completos', index=False)
-
-        workbook = writer.book
-        title_format = workbook.add_format({
-            'bold': True,
-            'font_size': 16,
-            'fg_color': '#1565c0',
-            'font_color': 'white'
-        })
-
-        worksheet_resumo = writer.sheets['Resumo']
-        worksheet_resumo.write(0, 0, titulo, title_format)
 
     output.seek(0)
     return output
