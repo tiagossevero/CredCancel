@@ -23,7 +23,7 @@ O arquivo `app_monolitico.py` (2.225 linhas, 79KB) consolida todos os módulos d
 ### Pré-requisitos
 
 ```bash
-pip install streamlit pandas numpy plotly sqlalchemy impyla xlsxwriter
+pip install streamlit pandas numpy plotly sqlalchemy impyla openpyxl
 ```
 
 ### Execução
